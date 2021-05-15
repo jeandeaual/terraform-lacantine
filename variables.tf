@@ -12,3 +12,9 @@ variable "google_site_verification" {
   type        = string
   description = "Google site verification TXT token"
 }
+
+variable "isp" {
+  type        = string
+  description = "ISP used in the SPF record"
+  default     = "***REMOVED***"
+}
