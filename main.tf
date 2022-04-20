@@ -368,19 +368,3 @@ resource "cloudflare_record" "spf" {
   type    = "TXT"
   proxied = false
 }
-
-resource "cloudflare_record" "xmppconnect_bosh" {
-  zone_id = cloudflare_zone.main.id
-  name    = "_xmppconnect"
-  value   = "_xmpp-client-xbosh=https://xmpp.${cloudflare_zone.main.zone}/bosh"
-  type    = "TXT"
-  proxied = false
-}
-
-resource "cloudflare_record" "xmppconnect_websocket" {
-  zone_id = cloudflare_zone.main.id
-  name    = "_xmppconnect"
-  value   = "_xmpp-client-websocket=wss://xmpp.${cloudflare_zone.main.zone}/ws"
-  type    = "TXT"
-  proxied = false
-}
