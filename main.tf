@@ -6,7 +6,7 @@ provider "cloudflare" {
 resource "cloudflare_zone" "main" {
   zone   = "lacantine.xyz"
   plan   = "free"
-  paused = "true"
+  paused = true
 }
 
 resource "cloudflare_record" "main_a" {
