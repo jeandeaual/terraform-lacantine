@@ -1,6 +1,6 @@
 variable "cloudflare_email" {
   type        = string
-  description = "CloudFlare email"
+  description = "CloudFlare e-mail address"
 }
 
 variable "cloudflare_api_key" {
@@ -16,5 +16,16 @@ variable "google_site_verification" {
 variable "isp" {
   type        = string
   description = "ISP used in the SPF record"
-  default     = "***REMOVED***"
+  default     = null
+}
+
+variable "ipv4_address" {
+  type        = string
+  description = "IPv4 address"
+}
+
+variable "ipv6_address" {
+  type        = string
+  description = "IPv6 address"
+  default     = null
 }

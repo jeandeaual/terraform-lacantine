@@ -12,15 +12,16 @@ resource "cloudflare_zone" "main" {
 resource "cloudflare_record" "main_a" {
   zone_id = cloudflare_zone.main.id
   name    = cloudflare_zone.main.zone
-  value   = "***REMOVED***"
+  value   = var.ipv4_address
   type    = "A"
   proxied = false
 }
 
 resource "cloudflare_record" "main_aaaa" {
+  count   = var.ipv6_address == null ? 0 : 1 # Don't create the resource if var.ipv6_address is not set
   zone_id = cloudflare_zone.main.id
   name    = cloudflare_zone.main.zone
-  value   = "2408:210:b305:a600:ba27:ebff:fe1a:550d"
+  value   = var.ipv6_address
   type    = "AAAA"
   proxied = false
 }
@@ -28,25 +29,27 @@ resource "cloudflare_record" "main_aaaa" {
 resource "cloudflare_record" "caa_letsencrypt" {
   zone_id = cloudflare_zone.main.id
   name    = cloudflare_zone.main.zone
-  data = {
+  type    = "CAA"
+  proxied = false
+
+  data {
     flags = "0"
     tag   = "issue"
     value = "letsencrypt.org"
   }
-  type    = "CAA"
-  proxied = false
 }
 
 resource "cloudflare_record" "caa_letsencrypt_wildcard" {
   zone_id = cloudflare_zone.main.id
   name    = cloudflare_zone.main.zone
   type    = "CAA"
-  data = {
+  proxied = false
+
+  data {
     flags = "0"
     tag   = "issuewild"
     value = "letsencrypt.org"
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "calibre" {
@@ -133,7 +136,9 @@ resource "cloudflare_record" "_mumble_tcp" {
   zone_id = cloudflare_zone.main.id
   name    = "_mumble._tcp"
   type    = "SRV"
-  data = {
+  proxied = false
+
+  data {
     service  = "_mumble"
     proto    = "_tcp"
     name     = cloudflare_zone.main.zone
@@ -142,14 +147,15 @@ resource "cloudflare_record" "_mumble_tcp" {
     port     = 64738
     target   = cloudflare_zone.main.zone
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "_stuns_tcp" {
   zone_id = cloudflare_zone.main.id
   name    = "_stuns._tcp"
   type    = "SRV"
-  data = {
+  proxied = false
+
+  data {
     service  = "_stuns"
     proto    = "_tcp"
     name     = cloudflare_zone.main.zone
@@ -158,14 +164,15 @@ resource "cloudflare_record" "_stuns_tcp" {
     port     = 5349
     target   = cloudflare_zone.main.zone
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "_stun_tcp" {
   zone_id = cloudflare_zone.main.id
   name    = "_stun._tcp"
   type    = "SRV"
-  data = {
+  proxied = false
+
+  data {
     service  = "_stun"
     proto    = "_tcp"
     name     = cloudflare_zone.main.zone
@@ -174,14 +181,15 @@ resource "cloudflare_record" "_stun_tcp" {
     port     = 3478
     target   = cloudflare_zone.main.zone
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "_stun_udp" {
   zone_id = cloudflare_zone.main.id
   name    = "_stun._udp"
   type    = "SRV"
-  data = {
+  proxied = false
+
+  data {
     service  = "_stun"
     proto    = "_udp"
     name     = cloudflare_zone.main.zone
@@ -190,14 +198,15 @@ resource "cloudflare_record" "_stun_udp" {
     port     = 3478
     target   = cloudflare_zone.main.zone
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "_turns_tcp" {
   zone_id = cloudflare_zone.main.id
   name    = "_turns._tcp"
   type    = "SRV"
-  data = {
+  proxied = false
+
+  data {
     service  = "_turns"
     proto    = "_tcp"
     name     = cloudflare_zone.main.zone
@@ -206,14 +215,15 @@ resource "cloudflare_record" "_turns_tcp" {
     port     = 5349
     target   = cloudflare_zone.main.zone
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "_turn_tcp" {
   zone_id = cloudflare_zone.main.id
   name    = "_turn._tcp"
   type    = "SRV"
-  data = {
+  proxied = false
+
+  data {
     service  = "_turn"
     proto    = "_tcp"
     name     = cloudflare_zone.main.zone
@@ -222,14 +232,15 @@ resource "cloudflare_record" "_turn_tcp" {
     port     = 3478
     target   = cloudflare_zone.main.zone
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "_turn_udp" {
   zone_id = cloudflare_zone.main.id
   name    = "_turn._udp"
   type    = "SRV"
-  data = {
+  proxied = false
+
+  data {
     service  = "_turn"
     proto    = "_udp"
     name     = cloudflare_zone.main.zone
@@ -238,14 +249,15 @@ resource "cloudflare_record" "_turn_udp" {
     port     = 3478
     target   = cloudflare_zone.main.zone
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "_xmpp-client_tcp_iot" {
   zone_id = cloudflare_zone.main.id
   name    = "_xmpp-client._tcp"
   type    = "SRV"
-  data = {
+  proxied = false
+
+  data {
     service  = "_xmpp-client"
     proto    = "_tcp"
     name     = "iot"
@@ -254,14 +266,15 @@ resource "cloudflare_record" "_xmpp-client_tcp_iot" {
     port     = 5222
     target   = "iot-${cloudflare_zone.main.zone}"
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "_xmpp-client_tcp_https" {
   zone_id = cloudflare_zone.main.id
   name    = "_xmpp-client._tcp"
   type    = "SRV"
-  data = {
+  proxied = false
+
+  data {
     service  = "_xmpp-client"
     proto    = "_tcp"
     name     = cloudflare_zone.main.zone
@@ -270,14 +283,15 @@ resource "cloudflare_record" "_xmpp-client_tcp_https" {
     port     = 443
     target   = cloudflare_zone.main.zone
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "_xmpp-client_tcp_default" {
   zone_id = cloudflare_zone.main.id
   name    = "_xmpp-client._tcp"
   type    = "SRV"
-  data = {
+  proxied = false
+
+  data {
     service  = "_xmpp-client"
     proto    = "_tcp"
     name     = cloudflare_zone.main.zone
@@ -286,14 +300,15 @@ resource "cloudflare_record" "_xmpp-client_tcp_default" {
     port     = 5222
     target   = cloudflare_zone.main.zone
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "_xmpps-client_tcp_iot" {
   zone_id = cloudflare_zone.main.id
   name    = "_xmpps-client._tcp"
   type    = "SRV"
-  data = {
+  proxied = false
+
+  data {
     service  = "_xmpps-client"
     proto    = "_tcp"
     name     = "iot"
@@ -302,14 +317,15 @@ resource "cloudflare_record" "_xmpps-client_tcp_iot" {
     port     = 5223
     target   = "iot-${cloudflare_zone.main.zone}"
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "_xmpps-client_tcp_https" {
   zone_id = cloudflare_zone.main.id
   name    = "_xmpps-client._tcp"
   type    = "SRV"
-  data = {
+  proxied = false
+
+  data {
     service  = "_xmpps-client"
     proto    = "_tcp"
     name     = cloudflare_zone.main.zone
@@ -318,14 +334,15 @@ resource "cloudflare_record" "_xmpps-client_tcp_https" {
     port     = 443
     target   = cloudflare_zone.main.zone
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "_xmpp-server_tcp" {
   zone_id = cloudflare_zone.main.id
   name    = "_xmpp-server._tcp"
   type    = "SRV"
-  data = {
+  proxied = false
+
+  data {
     service  = "_xmpp-server"
     proto    = "_tcp"
     name     = cloudflare_zone.main.zone
@@ -334,14 +351,15 @@ resource "cloudflare_record" "_xmpp-server_tcp" {
     port     = 5269
     target   = cloudflare_zone.main.zone
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "_xmpps-server_tcp" {
   zone_id = cloudflare_zone.main.id
   name    = "_xmpps-server._tcp"
   type    = "SRV"
-  data = {
+  proxied = false
+
+  data {
     service  = "_xmpps-server"
     proto    = "_tcp"
     name     = cloudflare_zone.main.zone
@@ -350,7 +368,6 @@ resource "cloudflare_record" "_xmpps-server_tcp" {
     port     = 5270
     target   = cloudflare_zone.main.zone
   }
-  proxied = false
 }
 
 resource "cloudflare_record" "google_site_verification" {
@@ -362,6 +379,7 @@ resource "cloudflare_record" "google_site_verification" {
 }
 
 resource "cloudflare_record" "spf" {
+  count   = var.isp == null ? 0 : 1 # Don't create the resource if var.isp is not set
   zone_id = cloudflare_zone.main.id
   name    = cloudflare_zone.main.zone
   value   = "v=spf1 include:${var.isp} -all"
